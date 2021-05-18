@@ -1,16 +1,16 @@
 NAME = spl
 
-LLVM_CONFIG = /usr/local/bin/llvm-config
+LLVM_CONFIG=/usr/local/Cellar/llvm@9/9.0.1_2/bin/llvm-config
 
 NO_WARNING =  -Wno-return-type \
 	-Wno-c++11-compat-deprecated-writable-strings \
 	-Wno-deprecated-register \
 	-Wno-switch \
 
-CXXFLAGS = `$(LLVM_CONFIG) --cppflags` -std=c++11 $(NO_WARNING)
-LDFLAGS = `$(LLVM_CONFIG) --ldflags`
-LIBS = `$(LLVM_CONFIG) --libs --system-libs`
-
+CXXFLAGS = -I/usr/local/opt/llvm@9/include `$(LLVM_CONFIG) --cppflags` -std=c++11 $(NO_WARNING)
+LDFLAGS = -L/usr/local/opt/llvm@9/lib `$(LLVM_CONFIG) --ldflags`
+#LIBS = -v `$(LLVM_CONFIG) --libs --system-libs` -lm   -lpthread -ldl 
+LIBS = `$(LLVM_CONFIG) --system-libs --libs e ngine interpreter ` -lffi``
 OBJS = parser.o tokenizer.o ast.o  main.o CodeGenerator.o
 
 all : $(NAME)
@@ -27,7 +27,8 @@ tokenizer.cpp: ${NAME}.l
 	g++ -c $(CXXFLAGS) -g -o $@ $< 
 
 $(NAME): $(OBJS)
-	g++ -o $@ $(OBJS) $(LIBS) $(LDFLAGS)
+	g++ -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
+
 
 .PHONY: clean
 clean:
